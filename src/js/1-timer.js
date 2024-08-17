@@ -10,6 +10,8 @@ const timerHours = document.querySelector('span[data-hours]');
 const timerMinutes = document.querySelector('span[data-minutes]');
 const timerSeconds = document.querySelector('span[data-seconds]');
 
+startBtn.addEventListener('click', startTimer);
+
 let userSelectedDate = '';
 let intervalId = '';
 
@@ -44,6 +46,18 @@ function convertMs(ms) {
 
 flatpickr(inputDateTimeEl, options);
 
+function startTimer() {
+  intervalId = setInterval(calculateTimeLeft, 1000);
+  startBtn.setAttribute('disabled', '');
+  inputDateTimeEl.setAttribute('disabled', '');
+}
+function calculateTimeLeft() {
+  const currentDateMs = new Date().getTime();
+  const selectedDateMS = new Date(userSelectedDate).getTime();
+  const ms = selectedDateMS - currentDateMs;
+  changeElementDayTimeValue(ms);
+}
+
 function changeElementDayTimeValue(ms) {
   const { days, hours, minutes, seconds } = convertMs(ms);
 
@@ -60,21 +74,6 @@ function changeElementDayTimeValue(ms) {
   timerHours.textContent = addLeadingZero(hours);
   timerMinutes.textContent = addLeadingZero(minutes);
   timerSeconds.textContent = addLeadingZero(seconds);
-}
-
-function calculateTimeLeft() {
-  const currentDateMs = new Date().getTime();
-  const selectedDateMS = new Date(userSelectedDate).getTime();
-  const ms = selectedDateMS - currentDateMs;
-  changeElementDayTimeValue(ms);
-}
-
-startBtn.addEventListener('click', startTimer);
-
-function startTimer() {
-  intervalId = setInterval(calculateTimeLeft, 1000);
-  disableBtn();
-  inputDateTimeEl.setAttribute('disabled', '');
 }
 
 function addErrorMessage() {
